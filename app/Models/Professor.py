@@ -1,4 +1,5 @@
 from app import db
+from sqlalchemy import ForeignKey
 
 class Professor (db.Model):
     __tablename__ = "professores"
