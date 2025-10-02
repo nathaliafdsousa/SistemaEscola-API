@@ -4,6 +4,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flasgger import Swagger
+from .blueprints import alunos_bp, turmas_bp, professores_bp
 
 db = SQLAlchemy()
 
