@@ -8,3 +8,6 @@ class Turma(db.Model):
     descricao = db.Column(String(100), nullable=False)
     professor_id = db.Column(Integer, ForeignKey("professor.id"), nullable=False)
     ativo = db.Column(db.Boolean, default=True, nullable=False)
+
+    def __repr__(self):
+        return f"<Turma {self.descricao}>"
