@@ -47,6 +47,11 @@ def listar_alunos():
 def obter_aluno(aluno_id):
     aluno = Aluno.query.get(aluno_id)
 
+@alunos_bp.route("/alunos/<int:aluno_id>", methods=["PUT"])
+def atualizar_aluno(aluno_id):
+    aluno = Aluno.query.get(aluno_id)
+    if not aluno:
+        return jsonify({"error:"})
 
 
     
