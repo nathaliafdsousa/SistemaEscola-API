@@ -18,7 +18,7 @@ def criar_professor():
         db.session.add(novo_professor)
         db.session.commit()
 
-        return jsonify({"message": "Professor criado com sucesso!"}), 201
+        return jsonify({"message": "Professor criado com sucesso!"}), 200
     except IntegrityError:
         db.session.rollback()
         return jsonify({"error": "Não foi possível cadastrar professor. Verifique os dados fornecidos."}), 400
@@ -40,7 +40,7 @@ def listar_professores():
 def obter_professor(professor_id):
     professor = Professor.query.get(professor_id)
     if not professor:
-        return jsonify({"error": "Professor não encontrado."}), 404
+        return jsonify({"error": "Professor não encontrado."}), 400
 
     resultado = {
         "id": professor.id,
@@ -54,7 +54,7 @@ def obter_professor(professor_id):
 def atualizar_professor(professor_id):
     professor = Professor.query.get(professor_id)
     if not professor:
-        return jsonify({"error": "Professor não encontrado."}), 404
+        return jsonify({"error": "Professor não encontrado."}), 400
 
     data = request.get_json()
     professor.nome = data.get("nome", professor.nome)
@@ -68,7 +68,7 @@ def atualizar_professor(professor_id):
 def deletar_professor(professor_id):    
     professor = Professor.query.get(professor_id)
     if not professor:
-        return jsonify({"error": "Professor não encontrado."}), 404
+        return jsonify({"error": "Professor não encontrado."}), 400
 
     db.session.delete(professor)
     db.session.commit()

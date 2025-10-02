@@ -20,7 +20,7 @@ def criar_aluno():
         db.session.add(criar_aluno)
         db.session.commit()
 
-        return jsonify({"message": "Aluno criado com sucesso!"}), 201
+        return jsonify({"message": "Aluno criado com sucesso!"}), 200
     except IntegrityError:
         db.session.rollback()
         return jsonify({"error": "Não foi possível cadastrar aluno. Verifique os dados fornecidos."}), 400
@@ -97,16 +97,6 @@ def deletar_aluno(aluno_id):
     return jsonify({"message": "Aluno deletado com sucesso!"}), 200 
 
     
-    
-    
-
-
-@alunos_bp.route("/alunos/<int:aluno_id>", methods=["PUT"])
-def atualizar_aluno(aluno_id):
-    aluno = Aluno.query.get(aluno_id)
-    if not aluno:
-        return jsonify({"error:"})
-
 
     
 
