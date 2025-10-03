@@ -1,4 +1,4 @@
-from app import db
+from . import db
 from sqlalchemy import ForeignKey, Integer, String, Boolean
 
 class Turma(db.Model):
