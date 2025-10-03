@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from datetime import datetime
-from Models import db
+from app import db
 from app.Models.Aluno import Aluno
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
@@ -83,7 +83,17 @@ def criar_aluno():
         nota_semestre1 = data.get("nota_semestre1")
         nota_semestre2 = data.get("nota_semestre2")
         media_final = (nota_semestre1 + nota_semestre2) / 2  if nota_semestre1 is not None and nota_semestre2 is not None else None
-        db.session.add(criar_aluno)
+
+        novo_aluno = Aluno(
+            nome=nome,
+            idade=idade,
+            turma_id=turma_id,
+            data_nascimento=datetime.strptime(data_nascimento_str, "%Y-%m-%d") if data_nascimento_str else None,
+            nota_semestre1=nota_semestre1,
+            nota_semestre2=nota_semestre2,
+            media_final=media_final
+        )
+        db.session.add(novo_aluno)
         db.session.commit()
 
         return jsonify({"message": "Aluno criado com sucesso!"}), 200
