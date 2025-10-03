@@ -8,6 +8,8 @@ from .Controllers.alunos_controller import alunos_bp
 from .Controllers.professor_controller import professores_bp
 from .Controllers.turmas_controller import turmas_bp
 
+Migrate = Migrate()
+Swagger = Swagger()
 db = SQLAlchemy()
 
 def create_app():
@@ -18,6 +20,13 @@ def create_app():
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False #desliga recurso de alteração de objeto do banco de dados para não ocupar memória
 
+    app.register_blueprint(alunos_bp)
+    app.register_blueprint(professores_bp)
+    app.register_blueprint(turmas_bp)
+    #Permite que as rotas do controller sejam reconhecidas no principal
+
+     #inicializa as extensões
+     #passa a instância do app para cada extensão
     db.init_app(app)
     Migrate.init_app(app, db)
     Swagger.init_app(app)
