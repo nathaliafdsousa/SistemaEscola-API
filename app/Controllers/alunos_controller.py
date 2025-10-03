@@ -165,6 +165,8 @@ def listar_alunos():
     except Exception:
         return jsonify({"error": "Não foi possível listar os alunos"}), 400
 
+
+
 @alunos_bp.route("/alunos/<int:aluno_id>", methods=["GET"])
 def obter_aluno(aluno_id):
 
