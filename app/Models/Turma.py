@@ -7,7 +7,7 @@ class Turma(db.Model):
     id = db.Column(Integer, primary_key = True)
     descricao = db.Column(String(100), nullable=False)
     professor_id = db.Column(Integer, ForeignKey("professores.id"), nullable=False)
-    ativo = db.Column(db.Boolean, default=True, nullable=False)
+    ativo = db.Column(Boolean, default=True, nullable=False)
 
     def __repr__(self):
         return f"<Turma {self.descricao}>"

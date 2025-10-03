@@ -36,6 +36,9 @@ def criar_professor():
                 materia:
                     type: string
                     example: Matemática
+                observacoes:
+                    type: string
+                    example: Professor de 3 turmas
     responses:
         200:
             description: Professor criado
@@ -218,6 +221,9 @@ def atualizar_professor(professor_id):
                 materia:
                     type: string
                     example: Matemática
+                observacoes:
+                    type: string
+                    example: Professor de 1 turma
     responses:
         200:
             description: Professor atualizado
