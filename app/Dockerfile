@@ -2,7 +2,7 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY app/app.py .
+COPY app/run.py .
 COPY app/requirements.txt .
 
 RUN pip install --upgrade pip && \
@@ -10,4 +10,4 @@ RUN pip install --upgrade pip && \
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["python", "run.py"]
