@@ -1,6 +1,7 @@
 from flask import request, jsonify
 from datetime import datetime
-from Models import db, Professor  
+from Models import db
+from app.Models.Professor import Professor 
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
 professores_bp = Blueprint("professores", __name__)
@@ -58,9 +59,10 @@ def criar_professor():
 
         nome = data.get("nome")
         idade = data.get("idade")
-        disciplina = data.get("disciplina")
+        materia = data.get("materia")
+        observacoes = data.get("observacoes")
 
-        novo_professor = Professor(nome=nome, idade=idade, disciplina=disciplina)
+        novo_professor = Professor(nome=nome, idade=idade, materia=materia, observacoes=observacoes)
         db.session.add(novo_professor)
         db.session.commit()
 

@@ -1,11 +1,12 @@
 from flask import request, jsonify
 from datetime import datetime
-from Models import db, Turma 
+from Models import db
+from app.Models.Turma import Turma
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
 turmas_bp = Blueprint("turmas", __name__)
 
-turmas_bp.route("/turmas", methods=["POST"])
+@turmas_bp.route("/turmas", methods=["POST"])
 def criar_turma():
 
     """
@@ -57,11 +58,11 @@ def criar_turma():
     try:
         data = request.get_json()
 
-        nome = data.get("nome")
-        ano = data.get("ano")
+        descricao = data.get("descricao")
+        ativo = data.get("ativo")
         professor_id = data.get("professor_id")
 
-        nova_turma = Turma(nome=nome, ano=ano, professor_id=professor_id)
+        nova_turma = Turma(descricao=descricao, ativo=ativo, professor_id=professor_id)
         db.session.add(nova_turma)
         db.session.commit()
 
