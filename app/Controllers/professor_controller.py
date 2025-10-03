@@ -110,16 +110,19 @@ def listar_professores():
                         example: Não foi possível listar os professores.
     """
 
-    professores = Professor.query.all()
-    resultado = []
-    for professor in professores:
-        resultado.append({
-            "id": professor.id,
-            "nome": professor.nome,
-            "idade": professor.idade,
-            "disciplina": professor.disciplina
-        })
-    return jsonify(resultado), 200
+    try:
+        professores = Professor.query.all()
+        resultado = []
+        for professor in professores:
+            resultado.append({
+                "id": professor.id,
+                "nome": professor.nome,
+                "idade": professor.idade,
+                "disciplina": professor.disciplina
+            })
+        return jsonify(resultado), 200
+    except Exception:
+        return jsonify({"error": "Não foi possível listar os professores."}), 400
 
 @professores_bp.route("/professores/<int:professor_id>", methods=["GET"])
 def obter_professor(professor_id):

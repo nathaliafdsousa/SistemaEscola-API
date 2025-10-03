@@ -147,20 +147,23 @@ def listar_alunos():
                         type: string
                         example: Não foi possível listar os alunos
     """
-    alunos = Aluno.query.all()
-    resultado = []
-    for aluno in alunos:
-        resultado.append({
-            "id": aluno.id,
-            "nome": aluno.nome,
-            "idade": aluno.idade,
-            "turma_id": aluno.turma_id,
-            "data_nascimento": aluno.data_nascimento.strftime("%Y-%m-%d"),
-            "nota_semestre1": aluno.nota_semestre1,
-            "nota_semestre2": aluno.nota_semestre2,
-            "media_final": aluno.media_final
-        })
-    return jsonify(resultado), 200
+    try:
+        alunos = Aluno.query.all()
+        resultado = []
+        for aluno in alunos:
+            resultado.append({
+                "id": aluno.id,
+                "nome": aluno.nome,
+                "idade": aluno.idade,
+                "turma_id": aluno.turma_id,
+                "data_nascimento": aluno.data_nascimento.strftime("%Y-%m-%d"),
+                "nota_semestre1": aluno.nota_semestre1,
+                "nota_semestre2": aluno.nota_semestre2,
+                "media_final": aluno.media_final
+            })
+        return jsonify(resultado), 200
+    except Exception:
+        return jsonify({"error": "Não foi possível listar os alunos"}), 400
 
 @alunos_bp.route("/alunos/<int:aluno_id>", methods=["GET"])
 def obter_aluno(aluno_id):

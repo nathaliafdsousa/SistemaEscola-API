@@ -110,17 +110,19 @@ def listar_turmas():
                         type: string
                         example: Não foi possível listar as turmas.
     """
-
-    turmas = Turma.query.all()
-    resultado = []
-    for turma in turmas:
-        resultado.append({
-            "id": turma.id,
-            "nome": turma.nome,
-            "ano": turma.ano,
+    try:
+        turmas = Turma.query.all()
+        resultado = []
+        for turma in turmas:
+            resultado.append({
+                "id": turma.id,
+                "nome": turma.nome,
+                "ano": turma.ano,
             "professor_id": turma.professor_id
-        })
-    return jsonify(resultado), 200
+            })
+        return jsonify(resultado), 200
+    except Exception:
+        return jsonify({"error": "Não foi possível listar as turmas."}), 400
 
 @turmas_bp.route("/turmas/<int:turma_id>", methods=["GET"])
 def obter_turma(turma_id):
