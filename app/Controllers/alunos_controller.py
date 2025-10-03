@@ -162,6 +162,8 @@ def listar_alunos():
         })
     return jsonify(resultado), 200
 
+
+
 @alunos_bp.route("/alunos/<int:aluno_id>", methods=["GET"])
 def obter_aluno(aluno_id):
 
