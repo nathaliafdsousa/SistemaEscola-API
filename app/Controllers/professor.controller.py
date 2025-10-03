@@ -19,8 +19,8 @@ def criar_professor():
     produces:
     - application/json
     parameters:
-    - in: body
-    name: professor
+        - in: body
+        name: professor
         description: Dados do professor que será criado
         required: true
         schema:
@@ -133,11 +133,11 @@ def obter_professor(professor_id):
     produces:
     - application/json
     parameters:
-    - in: path
-      name: professor_id
-      type: integer
-      required: true
-      description: ID do professor que deseja obter informações
+        - in: path
+        name: professor_id
+        type: integer
+        required: true
+        description: ID do professor que deseja obter informações
     responses:
         200:
             description: Informações do professor especificado
@@ -192,13 +192,13 @@ def atualizar_professor(professor_id):
     produces:
     - application/json
     parameters:
-    - in: path
-      name: professor_id
-      type: integer
-      required: true
-      description: ID do professor que será atualizado
-      - in: body
-      name: professor
+        - in: path
+        name: professor_id
+        type: integer
+        required: true
+        description: ID do professor que será atualizado
+         - in: body
+        name: professor
         description: Dados atualizados do professor
         required: true
         schema:
@@ -256,11 +256,11 @@ def deletar_professor(professor_id):
     produces:
     - application/json
     parameters:
-    - in: path
-    name: professor_id
-      type: integer
-      required: true
-      description: ID do professor que será excluído
+        - in: path
+        name: professor_id
+        type: integer
+        required: true
+        description: ID do professor que será excluído
     responses:
         200:
             description: Professor deletado
