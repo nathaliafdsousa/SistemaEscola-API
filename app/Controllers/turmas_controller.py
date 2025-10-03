@@ -27,12 +27,12 @@ def criar_turma():
         schema:
             type: object
             properties:
-                nome:
+                descricao:
                     type: string
                     example: ADS 3AN
-                ano:
-                    type: integer
-                    example: 2023
+                ativo:
+                    type: boolean
+                    example: true
                 professor_id:
                     type: integer
                     example: 10976
@@ -93,12 +93,12 @@ def listar_turmas():
                         id:
                             type: integer
                             example: 1234
-                        nome:
+                        descricao:
                             type: string
                             example: ADS
-                        ano:
-                            type: integer
-                            example: 2023
+                        ativo:
+                            type: boolean
+                            example: true
                         professor_id:
                             type: integer
                             example: 10976
@@ -117,9 +117,9 @@ def listar_turmas():
         for turma in turmas:
             resultado.append({
                 "id": turma.id,
-                "nome": turma.nome,
-                "ano": turma.ano,
-            "professor_id": turma.professor_id
+                "descricao": turma.descricao,
+                "ativo": turma.ativo,
+                "professor_id": turma.professor_id
             })
         return jsonify(resultado), 200
     except Exception:
@@ -151,12 +151,12 @@ def obter_turma(turma_id):
                     id:
                         type: integer
                         example: 1234
-                    nome:
+                    descricao:
                         type: string
                         example: ADS
-                    ano:
-                        type: integer
-                        example: 2023
+                    ativo:
+                        type: boolean
+                        example: true
                     professor_id:
                         type: integer
                         example: 10976
@@ -176,8 +176,8 @@ def obter_turma(turma_id):
 
     resultado = {
         "id": turma.id,
-        "nome": turma.nome,
-        "ano": turma.ano,
+        "descricao": turma.descricao,
+        "ativo": turma.ativo,
         "professor_id": turma.professor_id
     }
     return jsonify(resultado), 200
@@ -208,12 +208,12 @@ def atualizar_turma(turma_id):
         schema:
             type: object
             properties:
-                nome:
+                descricao:
                     type: string
                     example: ADS 3BN
-                ano:
-                    type: integer
-                    example: 2024
+                ativo:
+                    type: boolean
+                    example: true
                 professor_id:
                     type: integer
                     example: 10977
@@ -241,8 +241,8 @@ def atualizar_turma(turma_id):
         return jsonify({"error": "Turma não encontrada."}), 404
 
     data = request.get_json()
-    turma.nome = data.get("nome", turma.nome)
-    turma.ano = data.get("ano", turma.ano)
+    turma.descricao = data.get("descricao", turma.descricao)
+    turma.ativo = data.get("ativo", turma.ativo)
     turma.professor_id = data.get("professor_id", turma.professor_id)
 
     db.session.commit()

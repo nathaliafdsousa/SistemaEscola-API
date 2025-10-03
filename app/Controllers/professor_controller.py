@@ -33,7 +33,7 @@ def criar_professor():
                 idade:
                     type: integer
                     example: 40
-                disciplina:
+                materia:
                     type: string
                     example: Matemática
     responses:
@@ -99,7 +99,7 @@ def listar_professores():
                         idade:
                             type: integer
                             example: 40
-                        disciplina:
+                        materia:
                             type: string
                             example: Matemática
         400:
@@ -120,7 +120,7 @@ def listar_professores():
                 "id": professor.id,
                 "nome": professor.nome,
                 "idade": professor.idade,
-                "disciplina": professor.disciplina
+                "materia": professor.materia
             })
         return jsonify(resultado), 200
     except Exception:
@@ -158,7 +158,7 @@ def obter_professor(professor_id):
                     idade:
                         type: integer
                         example: 40
-                    disciplina:
+                    materia:
                         type: string
                         example: Matemática
         404:
@@ -179,7 +179,7 @@ def obter_professor(professor_id):
         "id": professor.id,
         "nome": professor.nome,
         "idade": professor.idade,
-        "disciplina": professor.disciplina
+        "materia": professor.materia
     }
     return jsonify(resultado), 200
 
@@ -215,7 +215,7 @@ def atualizar_professor(professor_id):
                 idade:
                     type: integer
                     example: 40
-                disciplina:
+                materia:
                     type: string
                     example: Matemática
     responses:
@@ -244,7 +244,7 @@ def atualizar_professor(professor_id):
     data = request.get_json()
     professor.nome = data.get("nome", professor.nome)
     professor.idade = data.get("idade", professor.idade)
-    professor.disciplina = data.get("disciplina", professor.disciplina)
+    professor.materia = data.get("materia", professor.materia)
 
     db.session.commit()
     return jsonify({"message": "Professor atualizado com sucesso!"}), 200
