@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from datetime import datetime
-from app import db
+from ..config import db
 from app.Models.Turma import Turma
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError

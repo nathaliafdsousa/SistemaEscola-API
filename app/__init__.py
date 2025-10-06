@@ -1,16 +1,10 @@
 #Configura a aplicação Flask; Cria a instância global do db; Inicializa extensões (SQLAlchemy, Migrate, Swagger); Retorna o app pronto para rodar
 
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flasgger import Swagger
+from .config import db, migrate, swagger
 from .Controllers.alunos_controller import alunos_bp 
 from .Controllers.professor_controller import professores_bp
 from .Controllers.turmas_controller import turmas_bp
-
-Migrate = Migrate()
-Swagger = Swagger()
-db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
@@ -28,8 +22,8 @@ def create_app():
      #inicializa as extensões
      #passa a instância do app para cada extensão
     db.init_app(app)
-    Migrate.init_app(app, db)
-    Swagger.init_app(app)
+    migrate.init_app(app, db)
+    swagger.init_app(app)
 
     return app
 

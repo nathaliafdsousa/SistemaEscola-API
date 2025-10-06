@@ -1,4 +1,4 @@
-from . import db
+from ..config import db
 from sqlalchemy import ForeignKey
 
 class Professor (db.Model):
