@@ -2,6 +2,7 @@
 
 from flask import Flask
 from .config import db, migrate, swagger
+from .Controllers.main_controller import main_bp
 from .Controllers.alunos_controller import alunos_bp 
 from .Controllers.professor_controller import professores_bp
 from .Controllers.turmas_controller import turmas_bp
@@ -14,6 +15,7 @@ def create_app():
 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False #desliga recurso de alteração de objeto do banco de dados para não ocupar memória
 
+    app.register_blueprint(main_bp)
     app.register_blueprint(alunos_bp)
     app.register_blueprint(professores_bp)
     app.register_blueprint(turmas_bp)
