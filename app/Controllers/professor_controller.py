@@ -4,16 +4,16 @@ from ..config import db
 from app.Models.Professor import Professor 
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
+
 professores_bp = Blueprint("professores", __name__)
 
 @professores_bp.route("/professores", methods=["POST"])
 def criar_professor():
-    
     """
     Cria um novo professor
 
     tags:
-    - professores
+    - Professores
     description: Permite a criação de um novo professor
     consumes:
     - application/json
@@ -21,11 +21,15 @@ def criar_professor():
     - application/json
     parameters:
         - in: body
-        name: professor
-        description: Dados do professor que será criado
-        required: true
-        schema:
+          name: professor
+          description: Dados do professor que será criado
+          required: true
+          schema:
             type: object
+            required:
+                - nome
+                - idade
+                - materia
             properties:
                 nome:
                     type: string
@@ -81,7 +85,7 @@ def listar_professores():
     Lista todos os professores existentes na base de dados.
 
     tags:
-    - professores
+    - Professores
     description: Retorna uma lista de todos os professores cadastrados
     produces:
     - application/json
@@ -136,16 +140,16 @@ def obter_professor(professor_id):
     Retornar as informações de um professor a partir de seu ID.
 
     tags:
-    - professores
+    - Professores
     description: Retorna os detalhes de um professor específico através do seu ID
     produces:
     - application/json
     parameters:
         - in: path
-        name: professor_id
-        type: integer
-        required: true
-        description: ID do professor que deseja obter informações
+          name: professor_id
+          type: integer
+          required: true
+          description: ID do professor que deseja obter informações
     responses:
         200:
             description: Informações do professor especificado
@@ -193,7 +197,7 @@ def atualizar_professor(professor_id):
     Atualiza as informações de um professor a partir do seu ID.
 
     tags:
-    - professores
+    - Professores
     description: Permite atualizar os detalhes de um professor a partir de seu ID.
     consumes:
     - application/json
@@ -201,15 +205,15 @@ def atualizar_professor(professor_id):
     - application/json
     parameters:
         - in: path
-        name: professor_id
-        type: integer
-        required: true
-        description: ID do professor que será atualizado
-         - in: body
-        name: professor
-        description: Dados atualizados do professor
-        required: true
-        schema:
+          name: professor_id
+          type: integer
+          required: true
+          description: ID do professor que será atualizado
+        - in: body
+          name: professor
+          description: Dados atualizados do professor
+          required: true
+          schema:
             type: object
             properties:
                 nome:
@@ -240,7 +244,7 @@ def atualizar_professor(professor_id):
                 properties:
                     error:
                         type: string
-                        example: Professor não encontrado.                
+                        example: Professor não encontrado.
     """
 
     professor = Professor.query.get(professor_id)
@@ -262,16 +266,16 @@ def deletar_professor(professor_id):
     Exclui um professor a partir de seu ID.
 
     tags:
-    - professores
+    - Professores
     description: Possibilita a exclusão de um professor específico através do seu ID
     produces:
     - application/json
     parameters:
         - in: path
-        name: professor_id
-        type: integer
-        required: true
-        description: ID do professor que será excluído
+          name: professor_id
+          type: integer
+          required: true
+          description: ID do professor que será excluído
     responses:
         200:
             description: Professor deletado

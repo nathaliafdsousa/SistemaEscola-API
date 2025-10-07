@@ -4,6 +4,8 @@ from ..config import db
 from app.Models.Turma import Turma
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
+from app.Models.Professor import Professor # Importe o Professor para checar a FK
+
 turmas_bp = Blueprint("turmas", __name__)
 
 @turmas_bp.route("/turmas", methods=["POST"])
@@ -13,7 +15,7 @@ def criar_turma():
     Cria uma nova turma
 
     tags:
-    - turmas
+    - Turmas
     description: Permite criar uma nova turma
     consumes:
     - application/json
@@ -21,11 +23,14 @@ def criar_turma():
     - application/json
     parameters:
         - in: body
-        name: turma
-        description: Dados da nova turma que será criada
-        required: true
-        schema:
+          name: turma
+          description: Dados da nova turma que será criada
+          required: true
+          schema:
             type: object
+            required:
+                - descricao
+                - professor_id
             properties:
                 descricao:
                     type: string
@@ -61,6 +66,10 @@ def criar_turma():
         descricao = data.get("descricao")
         ativo = data.get("ativo")
         professor_id = data.get("professor_id")
+        
+        # Opcionalmente, adicione uma verificação para garantir que o professor_id existe
+        if professor_id is not None and Professor.query.get(professor_id) is None:
+             return jsonify({"error": "Professor ID fornecido não existe."}), 400
 
         nova_turma = Turma(descricao=descricao, ativo=ativo, professor_id=professor_id)
         db.session.add(nova_turma)
@@ -70,6 +79,10 @@ def criar_turma():
     except IntegrityError:
         db.session.rollback()
         return jsonify({"error": "Não foi possível cadastrar turma. Verifique os dados fornecidos."}), 400
+    except Exception as e:
+        # Captura outros erros, incluindo os de validação de dados/tipo
+        db.session.rollback()
+        return jsonify({"error": f"Erro inesperado ao criar turma: {str(e)}"}), 400
     
 @turmas_bp.route("/turmas", methods=["GET"])
 def listar_turmas():
@@ -78,7 +91,7 @@ def listar_turmas():
     Listar todas as turmas existentes
 
     tags:
-    - turmas
+    - Turmas
     description: Retorna uma lista com todas as turmas cadastradas na base de dados
     produces:
     - application/json
@@ -132,16 +145,16 @@ def obter_turma(turma_id):
     Fornece as informações de uma turma específica com base em seu ID.
 
     tags:
-    -turmas
+    - Turmas
     description: Retorna os detalhes de uma turma a partir do seu ID
     produces:
     - application/json
     parameters:
         - in: path
-        name: turma_id
-        type: integer
-        required: true
-        description: ID identificador da turma que deseja obter informações
+          name: turma_id
+          type: integer
+          required: true
+          description: ID identificador da turma que deseja obter informações
     responses:
         200:
             description: Informações da turma especificada
@@ -161,7 +174,7 @@ def obter_turma(turma_id):
                         type: integer
                         example: 10976
         404:
-            description: Erro ao tentar obter informações da turma especificada
+            description: Turma não encontrada
             schema:
                 type: object
                 properties:
@@ -189,7 +202,7 @@ def atualizar_turma(turma_id):
     Atualizar informações de uma turma já existente
 
     tags:
-    - turmas
+    - Turmas
     description: Permite atualizar dados de uma turma
     consumes:
     - application/json
@@ -197,15 +210,15 @@ def atualizar_turma(turma_id):
     - application/json
     parameters:
         - in: path
-        nome: turma_id
-        type: integer
-        required: true
-        description: ID da turma que será atualizada
+          name: turma_id
+          type: integer
+          required: true
+          description: ID da turma que será atualizada
         - in: body
-        nome: turma
-        description: Dados atualizados da turma
-        required: true
-        schema:
+          name: turma
+          description: Dados atualizados da turma
+          required: true
+          schema:
             type: object
             properties:
                 descricao:
@@ -227,13 +240,13 @@ def atualizar_turma(turma_id):
                         type: string
                         example: Turma atualizada com sucesso!
         404:
-            description: Erro na atualização da turma
+            description: Turma não encontrada
             schema:
                 type: object
                 properties:
                     error:
                         type: string
-                        example: Não foi possível encontrar a turma para atualizar. Verifique os dados fornecidos.
+                        example: Não foi possível encontrar a turma para atualizar.
     """
 
     turma = Turma.query.get(turma_id)
@@ -241,9 +254,15 @@ def atualizar_turma(turma_id):
         return jsonify({"error": "Turma não encontrada."}), 404
 
     data = request.get_json()
+    
+    professor_id = data.get("professor_id")
+    # Opcionalmente, adicione uma verificação para garantir que o professor_id existe
+    if professor_id is not None and Professor.query.get(professor_id) is None:
+         return jsonify({"error": "Professor ID fornecido não existe."}), 400
+
     turma.descricao = data.get("descricao", turma.descricao)
     turma.ativo = data.get("ativo", turma.ativo)
-    turma.professor_id = data.get("professor_id", turma.professor_id)
+    turma.professor_id = professor_id if professor_id is not None else turma.professor_id
 
     db.session.commit()
     return jsonify({"message": "Turma atualizada com sucesso!"}), 200
@@ -255,16 +274,16 @@ def deletar_turma(turma_id):
     Excluir uma turma existente a partir de seu ID
 
     tags:
-    - turmas
+    - Turmas
     description: Permite excluir uma turma a partir do seu ID
     produces:
     - application/json
     parameters:
         - in: path
-        nome: turma_id
-        typer: integer
-        required: true
-        description: ID da turma que será excluída
+          name: turma_id
+          type: integer
+          required: true
+          description: ID da turma que será excluída
     responses:
         200:
             description: Turma deletada
@@ -275,13 +294,13 @@ def deletar_turma(turma_id):
                         type: string
                         example: Turma excluída com sucesso!
         404:
-            description: Erro na exclusão da turma
+            description: Turma não encontrada
             schema:
                 type: object
                 properties:
                     error:
                         type: string
-                        example: Não foi possível encontrar a turma para excluir. Verifique os dados fornecidos.
+                        example: Não foi possível encontrar a turma para excluir.
     """
 
     turma = Turma.query.get(turma_id)

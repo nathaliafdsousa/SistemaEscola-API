@@ -4,27 +4,27 @@ from ..config import db
 from app.Models.Aluno import Aluno
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
+
 alunos_bp = Blueprint("alunos", __name__)
 
 @alunos_bp.route("/alunos", methods=["POST"])
 def criar_aluno():
-    
     """
     Cria um novo aluno
     
     tags:
-    - alunos
+    - Alunos
     description: Cria um novo aluno com os dados fornecidos no corpo da requisição.
     consumes:
     - application/json
     produces:
     - application/json
     parameters:
-        -in: body
-        name:aluno
-        description: Dados do aluno a ser criado
-        required: true
-        schema:
+        - in: body
+          name: aluno
+          description: Dados do aluno a ser criado
+          required: true
+          schema:
             type: object
             required:
                 - nome
@@ -61,8 +61,9 @@ def criar_aluno():
             schema:
                 type: object
                 properties:
-                    message: Aluno criado com sucesso!
-                    example: {"message": "Aluno criado com sucesso!"}
+                    message:
+                        type: string
+                        example: Aluno criado com sucesso!
         400:
             description: Erro ao criar aluno
             schema:
@@ -82,7 +83,7 @@ def criar_aluno():
         data_nascimento_str = data.get("data_nascimento")
         nota_semestre1 = data.get("nota_semestre1")
         nota_semestre2 = data.get("nota_semestre2")
-        media_final = (nota_semestre1 + nota_semestre2) / 2  if nota_semestre1 is not None and nota_semestre2 is not None else None
+        media_final = (nota_semestre1 + nota_semestre2) / 2 if nota_semestre1 is not None and nota_semestre2 is not None else None
 
         novo_aluno = Aluno(
             nome=nome,
@@ -100,7 +101,7 @@ def criar_aluno():
     except IntegrityError:
         db.session.rollback()
         return jsonify({"error": "Não foi possível cadastrar aluno. Verifique os dados fornecidos."}), 400
-    
+
 
 @alunos_bp.route("/alunos", methods=["GET"])
 def listar_alunos():
@@ -109,7 +110,7 @@ def listar_alunos():
     Retorna uma lista com todos os alunos existentes.
     
     tags:
-    - alunos
+    - Alunos
     description: Retorna uma lista com todos os alunos existentes.
     produces:
     - application/json
@@ -122,8 +123,8 @@ def listar_alunos():
                     type: object
                     properties:
                         id:
-                        type: integer
-                        example: 1
+                            type: integer
+                            example: 1
                         nome:
                             type: string
                             example: Maria Silva
@@ -177,7 +178,6 @@ def listar_alunos():
         return jsonify({"error": "Não foi possível listar os alunos"}), 400
 
 
-
 @alunos_bp.route("/alunos/<int:aluno_id>", methods=["GET"])
 def obter_aluno(aluno_id):
 
@@ -185,59 +185,59 @@ def obter_aluno(aluno_id):
     Retorna as informações de um aluno específico baseado em seu ID
 
     tags:
-    - alunos
+    - Alunos
     description: Retorna as informações de um aluno baseado em seu ID.
     produces:
     - application/json
     parameters:
         - in: path
-        name: aluno_id
-        description: ID do aluno que será usado para identificá-lo
-        required: true
-        type: integer
+          name: aluno_id
+          description: ID do aluno que será usado para identificá-lo
+          required: true
+          type: integer
     responses:
         200:
-        description: Informações do aluno retornada com sucesso
-        schema:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    example: 2403658
-                nome:
-                    type: string
-                    example: Maria Silva
-                idade:
-                    type: integer
-                    example: 25
-                turma_id:
-                    type: integer
-                    example: 3039
-                data_nascimento:
-                    type: string
-                    format: date
-                    example: 1998-03-22
-                nota_semestre1:
-                    type: number
-                    format: float
-                    example: 6.75
-                nota_semestre2:
-                    type: number
-                    format: float
-                    example: 4.0
-                media_final:
-                    type: number
-                    format: float
-                    example: 5.375
+            description: Informações do aluno retornada com sucesso
+            schema:
+                type: object
+                properties:
+                    id:
+                        type: integer
+                        example: 2403658
+                    nome:
+                        type: string
+                        example: Maria Silva
+                    idade:
+                        type: integer
+                        example: 25
+                    turma_id:
+                        type: integer
+                        example: 3039
+                    data_nascimento:
+                        type: string
+                        format: date
+                        example: 1998-03-22
+                    nota_semestre1:
+                        type: number
+                        format: float
+                        example: 6.75
+                    nota_semestre2:
+                        type: number
+                        format: float
+                        example: 4.0
+                    media_final:
+                        type: number
+                        format: float
+                        example: 5.375
         404:
-        description: Erro ao tentar obter informações do aluno especificado
-        schema:
-            type: object
-            properties:
-                error:
-                    type: string
-                    example: Aluno não encontrado. Favor verificar o ID informado.
-        """
+            description: Erro ao tentar obter informações do aluno especificado
+            schema:
+                type: object
+                properties:
+                    error:
+                        type: string
+                        example: Aluno não encontrado. Favor verificar o ID informado.
+    """
     
     aluno = Aluno.query.get(aluno_id)
     if not aluno:
@@ -245,7 +245,7 @@ def obter_aluno(aluno_id):
     resultado = {
         "id": aluno.id,
         "nome": aluno.nome,
-        "idade": aluno.idade,       
+        "idade": aluno.idade,      
         "turma_id": aluno.turma_id,
         "data_nascimento": aluno.data_nascimento.strftime("%Y-%m-%d"),
         "nota_semestre1": aluno.nota_semestre1,
@@ -260,7 +260,7 @@ def atualizar_aluno(aluno_id):
     Atualiza as informações de um aluno com base em seu ID.
 
     tags:
-    - alunos
+    - Alunos
     description: Atualiza as informações de um aluno com base em seu ID.
     consumes:
     - application/json
@@ -268,15 +268,15 @@ def atualizar_aluno(aluno_id):
     - application/json
     parameters:
         - in: path
-        name: aluno_id
-        description: ID do aluno que terá dados atualizados
-        required: true
-        type: integer
+          name: aluno_id
+          description: ID do aluno que terá dados atualizados
+          required: true
+          type: integer
         - in: body
-        name: aluno
-        description: Dados do aluno que serão atualizados
-        required: true
-        schema:
+          name: aluno
+          description: Dados do aluno que serão atualizados
+          required: true
+          schema:
             type: object
             properties:
                 nome:
@@ -357,16 +357,16 @@ def deletar_aluno(aluno_id):
     Exclui um aluno da base de dados baseado em seu ID.
 
     tags:
-    - alunos
+    - Alunos
     description: Exclui um aluno com base em seu ID.
     produces:
     - application/json
     parameters:
         - in: path
-        name: aluno_id
-        description: ID do aluno que será excluído da base de dados
-        required: true
-        type: integer
+          name: aluno_id
+          description: ID do aluno que será excluído da base de dados
+          required: true
+          type: integer
     responses:
         200:
             description: Aluno deletado com sucesso
@@ -376,7 +376,6 @@ def deletar_aluno(aluno_id):
                     message:
                         type: string
                         example: Aluno deletado com sucesso!
-        400:
         404:
             description: Aluno não encontrado para prosseguir com a exclusão
             schema:
@@ -384,7 +383,7 @@ def deletar_aluno(aluno_id):
                 properties:
                     error:
                         type: string
-                        example: Aluno não encontrado       
+                        example: Aluno não encontrado      
     """
     aluno = Aluno.query.get(aluno_id)
     if not aluno:
@@ -392,14 +391,3 @@ def deletar_aluno(aluno_id):
     db.session.delete(aluno)
     db.session.commit()
     return jsonify({"message": "Aluno deletado com sucesso!"}), 200
-    
-
-    
-
-    
-
-        
-
-
-
-
