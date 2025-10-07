@@ -3,6 +3,14 @@ from flask import Flask, jsonify
 
 app = create_app()
 
+from app.Controllers.alunos_controller import alunos_bp
+from app.Controllers.professor_controller import professor_bp
+from app.Controllers.turmas_controller import turmas_bp
+
+app.register_blueprint(alunos_bp)
+app.register_blueprint(professor_bp)
+app.register_blueprint(turmas_bp)
+
 @app.route("/health")
 def home():
     return jsonify({"message":"API Sistema Escolar rodando no container!"})
