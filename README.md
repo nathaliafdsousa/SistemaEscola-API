@@ -5,6 +5,11 @@
 
 Uma API RESTful desenvolvida em Python com o framework Flask para gerenciar as operações básicas de um sistema escolar. O projeto permite o cadastro e a manipulação de dados de alunos, cursos e as matrículas que os relacionam.
 
+Colaboradores do projeto:
+   **Ana Olivia Geraldo - RA:2403901**
+   **Gabrielle Ribeiro de Pádua - RA:2403656**
+   **Nathalia Ferreira - RA:2402413**
+   **Pedro Felipe - RA:2400450**
 # Funcionalidades
 
 A API oferece os seguintes endpoints para gerenciamento:
