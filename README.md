@@ -77,7 +77,7 @@ Com o ambiente configurado e as dependências instaladas, utilize o seguinte com
 ```bash
 python -m app.run
 ```
-A API estará disponível no endereço: `http://127.0.0.1:5000/`
+
 A API estará disponível no endereço: `http://127.0.0.1:5000/`
 
 ---
