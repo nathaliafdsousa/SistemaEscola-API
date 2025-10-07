@@ -11,7 +11,7 @@ class Aluno (db.Model):
     data_nascimento = db.Column(db.Date, nullable=False)
     nota_semestre1 = db.Column(db.Float, nullable=False)
     nota_semestre2 = db.Column(db.Float, nullable=False)
-    media_final = db.Column(db.Float, nullable=False)
+    media_final = db.Column(db.Float, nullable=True)
 
     def __repr__(self):
         return f"<Aluno {self.nome}>"
