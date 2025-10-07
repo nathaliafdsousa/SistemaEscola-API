@@ -1,12 +1,14 @@
-from flask import request, jsonify
-from datetime import datetime
+from flask import request, jsonify, Blueprint
 from ..config import db
-from app.Models.Professor import Professor 
-from flask import Blueprint
+from app.Models.Professor import Professor
 from sqlalchemy.exc import IntegrityError
+from werkzeug.exceptions import BadRequest # Importado para capturar o erro de sintaxe JSON
 
 professores_bp = Blueprint("professores", __name__)
 
+# ----------------------------------------------------------------------
+
+# ----------------------------------------------------------------------
 @professores_bp.route("/professores", methods=["POST"])
 def criar_professor():
     """
@@ -64,23 +66,52 @@ def criar_professor():
     try:
         data = request.get_json()
 
+        # 1. Checa se o JSON está presente
+        if not data:
+             return jsonify({"error": "Dados JSON ausentes ou mal formatados."}), 400
+
         nome = data.get("nome")
         idade = data.get("idade")
         materia = data.get("materia")
         observacoes = data.get("observacoes")
+
+        # 2. Validação básica de campos obrigatórios
+        if not nome or idade is None or not materia:
+             return jsonify({"error": "Campos 'nome', 'idade' e 'materia' são obrigatórios."}), 400
+        
+        # Tenta converter idade para int
+        try:
+             idade = int(idade)
+        except ValueError:
+             return jsonify({"error": "O campo 'idade' deve ser um número inteiro."}), 400
+
 
         novo_professor = Professor(nome=nome, idade=idade, materia=materia, observacoes=observacoes)
         db.session.add(novo_professor)
         db.session.commit()
 
         return jsonify({"message": "Professor criado com sucesso!"}), 200
+    
     except IntegrityError:
         db.session.rollback()
-        return jsonify({"error": "Não foi possível cadastrar professor. Verifique os dados fornecidos."}), 400
+        return jsonify({"error": "Não foi possível cadastrar professor. Verifique os dados fornecidos (ex: duplicidade)."}), 400
     
+    except BadRequest as e:
+        # Captura o erro de sintaxe do JSON antes da aplicação tentar processar
+        print(f"Erro de decodificação de JSON: {e}")
+        return jsonify({"error": f"Erro de sintaxe no JSON: {e.description}"}), 400
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erro ao criar professor: {e}")
+        return jsonify({"error": "Erro interno do servidor."}), 500
+
+
+# ----------------------------------------------------------------------
+# ROTA: GET /professores (Listagem)
+# ----------------------------------------------------------------------
 @professores_bp.route("/professores", methods=["GET"])
 def listar_professores():
-
     """
     Lista todos os professores existentes na base de dados.
 
@@ -99,7 +130,7 @@ def listar_professores():
                     properties:
                         id:
                             type: integer
-                            example: 1322
+                            example: 1
                         nome:
                             type: string
                             example: Jorge Fernandes
@@ -109,6 +140,9 @@ def listar_professores():
                         materia:
                             type: string
                             example: Matemática
+                        observacoes:
+                            type: string
+                            example: Professor de 3 turmas
         400:
             description: Erro ao tentar listar os professores
             schema:
@@ -118,7 +152,6 @@ def listar_professores():
                         type: string
                         example: Não foi possível listar os professores.
     """
-
     try:
         professores = Professor.query.all()
         resultado = []
@@ -127,12 +160,18 @@ def listar_professores():
                 "id": professor.id,
                 "nome": professor.nome,
                 "idade": professor.idade,
-                "materia": professor.materia
+                "materia": professor.materia,
+                "observacoes": professor.observacoes if hasattr(professor, 'observacoes') else None # Garante que observacoes é incluído
             })
         return jsonify(resultado), 200
-    except Exception:
-        return jsonify({"error": "Não foi possível listar os professores."}), 400
+    except Exception as e:
+        print(f"Erro ao listar professores: {e}")
+        return jsonify({"error": "Não foi possível listar os professores."}), 500
 
+
+# ----------------------------------------------------------------------
+# ROTA: GET /professores/<int:professor_id> (Busca por ID)
+# ----------------------------------------------------------------------
 @professores_bp.route("/professores/<int:professor_id>", methods=["GET"])
 def obter_professor(professor_id):
     
@@ -158,7 +197,7 @@ def obter_professor(professor_id):
                 properties:
                     id:
                         type: integer
-                        example: 1322
+                        example: 1
                     nome:
                         type: string
                         example: Jorge Fernandes
@@ -168,6 +207,9 @@ def obter_professor(professor_id):
                     materia:
                         type: string
                         example: Matemática
+                    observacoes:
+                        type: string
+                        example: Professor de 3 turmas
         404:
             description: Professor não encontrado
             schema:
@@ -177,19 +219,29 @@ def obter_professor(professor_id):
                         type: string
                         example: Professor não encontrado.
     """
+    try:
+        professor = Professor.query.get(professor_id)
+        if not professor:
+            return jsonify({"error": "Professor não encontrado."}), 404
 
-    professor = Professor.query.get(professor_id)
-    if not professor:
-        return jsonify({"error": "Professor não encontrado."}), 404
+        resultado = {
+            "id": professor.id,
+            "nome": professor.nome,
+            "idade": professor.idade,
+            "materia": professor.materia,
+            "observacoes": professor.observacoes
+        }
+        return jsonify(resultado), 200
+    except Exception as e:
+        print(f"Erro ao obter professor por ID: {e}")
+        return jsonify({"error": "Erro interno do servidor."}), 500
 
-    resultado = {
-        "id": professor.id,
-        "nome": professor.nome,
-        "idade": professor.idade,
-        "materia": professor.materia
-    }
-    return jsonify(resultado), 200
 
+# ----------------------------------------------------------------------
+# ROTA: PUT /professores/<int:professor_id> (Atualização)
+# Adicionado tratamento para JSON ausente, erro de sintaxe JSON (BadRequest) 
+# e erro de conversão de tipo (ValueError).
+# ----------------------------------------------------------------------
 @professores_bp.route("/professores/<int:professor_id>", methods=["PUT"])
 def atualizar_professor(professor_id):
 
@@ -246,19 +298,51 @@ def atualizar_professor(professor_id):
                         type: string
                         example: Professor não encontrado.
     """
+    try:
+        professor = Professor.query.get(professor_id)
+        if not professor:
+            return jsonify({"error": "Professor não encontrado."}), 404
 
-    professor = Professor.query.get(professor_id)
-    if not professor:
-        return jsonify({"error": "Professor não encontrado."}), 404
+        data = request.get_json()
+        
+        if not data:
+            return jsonify({"error": "Dados JSON ausentes. Certifique-se de usar o header 'Content-Type: application/json'."}), 400
 
-    data = request.get_json()
-    professor.nome = data.get("nome", professor.nome)
-    professor.idade = data.get("idade", professor.idade)
-    professor.materia = data.get("materia", professor.materia)
+        # Atualização segura dos campos
+        if "nome" in data:
+            professor.nome = data["nome"]
+            
+        if "idade" in data:
+            try:
+                # Tenta garantir que o dado é um inteiro
+                professor.idade = int(data["idade"])
+            except (TypeError, ValueError):
+                return jsonify({"error": "O campo 'idade' deve ser um número inteiro válido."}), 400
 
-    db.session.commit()
-    return jsonify({"message": "Professor atualizado com sucesso!"}), 200
+        if "materia" in data:
+            professor.materia = data["materia"]
+            
+        if "observacoes" in data:
+            professor.observacoes = data["observacoes"]
 
+        db.session.commit()
+        return jsonify({"message": "Professor atualizado com sucesso!"}), 200
+
+    except BadRequest as e:
+        # Captura o erro de sintaxe do JSON (o que estava te dando dor de cabeça)
+        print(f"Erro de decodificação de JSON: {e}")
+        return jsonify({"error": f"Erro de sintaxe no JSON: {e.description}"}), 400
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erro (PUT /professores/{professor_id}) ao atualizar professor: {e}")
+        return jsonify({"error": "Erro interno do servidor."}), 500
+
+
+# ----------------------------------------------------------------------
+# ROTA: DELETE /professores/<int:professor_id> (Exclusão)
+# Adicionado tratamento de erro interno.
+# ----------------------------------------------------------------------
 @professores_bp.route("/professores/<int:professor_id>", methods=["DELETE"])
 def deletar_professor(professor_id):
     
@@ -294,11 +378,19 @@ def deletar_professor(professor_id):
                         type: string
                         example: Professor não encontrado.
     """
+    try:
+        professor = Professor.query.get(professor_id)
+        if not professor:
+            return jsonify({"error": "Professor não encontrado."}), 404
 
-    professor = Professor.query.get(professor_id)
-    if not professor:
-        return jsonify({"error": "Professor não encontrado."}), 404
+        db.session.delete(professor)
+        db.session.commit()
+        return jsonify({"message": "Professor deletado com sucesso!"}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erro ao deletar professor: {e}")
+        return jsonify({"error": "Erro interno do servidor ao tentar deletar o professor."}), 500
 
-    db.session.delete(professor)
-    db.session.commit()
-    return jsonify({"message": "Professor deletado com sucesso!"}), 200
+
+
