@@ -2,13 +2,11 @@ from flask import request, jsonify, Blueprint
 from ..config import db
 from app.Models.Professor import Professor
 from sqlalchemy.exc import IntegrityError
-from werkzeug.exceptions import BadRequest # Importado para capturar o erro de sintaxe JSON
+from werkzeug.exceptions import BadRequest 
 
 professores_bp = Blueprint("professores", __name__)
 
-# ----------------------------------------------------------------------
 
-# ----------------------------------------------------------------------
 @professores_bp.route("/professores", methods=["POST"])
 def criar_professor():
     """
@@ -66,20 +64,20 @@ def criar_professor():
     try:
         data = request.get_json()
 
-        # 1. Checa se o JSON está presente
+        
         if not data:
-             return jsonify({"error": "Dados JSON ausentes ou mal formatados."}), 400
+             return jsonify({"error": "Dados JSON ausentes."}), 400
 
         nome = data.get("nome")
         idade = data.get("idade")
         materia = data.get("materia")
         observacoes = data.get("observacoes")
 
-        # 2. Validação básica de campos obrigatórios
+        
         if not nome or idade is None or not materia:
              return jsonify({"error": "Campos 'nome', 'idade' e 'materia' são obrigatórios."}), 400
         
-        # Tenta converter idade para int
+        
         try:
              idade = int(idade)
         except ValueError:
@@ -97,7 +95,7 @@ def criar_professor():
         return jsonify({"error": "Não foi possível cadastrar professor. Verifique os dados fornecidos (ex: duplicidade)."}), 400
     
     except BadRequest as e:
-        # Captura o erro de sintaxe do JSON antes da aplicação tentar processar
+        
         print(f"Erro de decodificação de JSON: {e}")
         return jsonify({"error": f"Erro de sintaxe no JSON: {e.description}"}), 400
 
@@ -106,10 +104,6 @@ def criar_professor():
         print(f"Erro ao criar professor: {e}")
         return jsonify({"error": "Erro interno do servidor."}), 500
 
-
-# ----------------------------------------------------------------------
-# ROTA: GET /professores (Listagem)
-# ----------------------------------------------------------------------
 @professores_bp.route("/professores", methods=["GET"])
 def listar_professores():
     """
@@ -169,9 +163,7 @@ def listar_professores():
         return jsonify({"error": "Não foi possível listar os professores."}), 500
 
 
-# ----------------------------------------------------------------------
-# ROTA: GET /professores/<int:professor_id> (Busca por ID)
-# ----------------------------------------------------------------------
+
 @professores_bp.route("/professores/<int:professor_id>", methods=["GET"])
 def obter_professor(professor_id):
     
@@ -236,12 +228,6 @@ def obter_professor(professor_id):
         print(f"Erro ao obter professor por ID: {e}")
         return jsonify({"error": "Erro interno do servidor."}), 500
 
-
-# ----------------------------------------------------------------------
-# ROTA: PUT /professores/<int:professor_id> (Atualização)
-# Adicionado tratamento para JSON ausente, erro de sintaxe JSON (BadRequest) 
-# e erro de conversão de tipo (ValueError).
-# ----------------------------------------------------------------------
 @professores_bp.route("/professores/<int:professor_id>", methods=["PUT"])
 def atualizar_professor(professor_id):
 
@@ -307,14 +293,12 @@ def atualizar_professor(professor_id):
         
         if not data:
             return jsonify({"error": "Dados JSON ausentes. Certifique-se de usar o header 'Content-Type: application/json'."}), 400
-
-        # Atualização segura dos campos
+        
         if "nome" in data:
             professor.nome = data["nome"]
             
         if "idade" in data:
             try:
-                # Tenta garantir que o dado é um inteiro
                 professor.idade = int(data["idade"])
             except (TypeError, ValueError):
                 return jsonify({"error": "O campo 'idade' deve ser um número inteiro válido."}), 400
@@ -338,11 +322,6 @@ def atualizar_professor(professor_id):
         print(f"Erro (PUT /professores/{professor_id}) ao atualizar professor: {e}")
         return jsonify({"error": "Erro interno do servidor."}), 500
 
-
-# ----------------------------------------------------------------------
-# ROTA: DELETE /professores/<int:professor_id> (Exclusão)
-# Adicionado tratamento de erro interno.
-# ----------------------------------------------------------------------
 @professores_bp.route("/professores/<int:professor_id>", methods=["DELETE"])
 def deletar_professor(professor_id):
     

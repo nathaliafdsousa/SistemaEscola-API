@@ -1,5 +1,4 @@
 from flask import Flask
-# Importando as extensões do config
 from .config import db, migrate, swagger
 from .Controllers.main_controller import main_bp
 from .Controllers.alunos_controller import alunos_bp 
@@ -19,23 +18,19 @@ def create_app():
         'doc_dir': app.root_path,
         'APISPEC_AUTO_SCAN': True,
         
-        # CORREÇÃO CRÍTICA PARA ERROS DE 'None is not defined'
-        # Isso força o Flagger a lidar com o serializador YAML corretamente.
-        'APISPEC_AUTO_SCAN_ROUTES': False, # Desabilita o scan automático de rotas, usaremos Blueprints
+        
+        'APISPEC_AUTO_SCAN_ROUTES': False, 
         'APISPEC': {
-            'security': [], # Garante que este campo exista
+            'security': [], 
             'basePath': '/',
             'info': {'description': 'API para Gerenciamento Escolar', 'title': 'SISTEMASCOLA-API', 'version': '1.0.0'}
         }
     }
     
-    # IMPORTANTE: A inicialização das extensões deve vir antes do registro dos Blueprints
-    # Isso resolve o problema de "No operations defined in spec!"
+
     db.init_app(app)
     migrate.init_app(app, db)
-     # O Flagger/Swagger é inicializado primeiro
 
-    # Registro dos Blueprints (Agora o Swagger pode escanear as rotas corretamente)
     app.register_blueprint(main_bp)
     app.register_blueprint(alunos_bp)
     app.register_blueprint(professores_bp)
