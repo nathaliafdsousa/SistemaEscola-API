@@ -11,7 +11,7 @@ alunos_bp = Blueprint("alunos", __name__)
 def criar_aluno():
     """
     Cria um novo aluno
-    
+    ---
     tags:
     - Alunos
     description: Cria um novo aluno com os dados fornecidos no corpo da requisição.
@@ -108,7 +108,7 @@ def listar_alunos():
     
     """
     Retorna uma lista com todos os alunos existentes.
-    
+    ---
     tags:
     - Alunos
     description: Retorna uma lista com todos os alunos existentes.
@@ -183,7 +183,7 @@ def obter_aluno(aluno_id):
 
     """
     Retorna as informações de um aluno específico baseado em seu ID
-
+    ---
     tags:
     - Alunos
     description: Retorna as informações de um aluno baseado em seu ID.
@@ -258,7 +258,7 @@ def obter_aluno(aluno_id):
 def atualizar_aluno(aluno_id):
     """
     Atualiza as informações de um aluno com base em seu ID.
-
+    ---
     tags:
     - Alunos
     description: Atualiza as informações de um aluno com base em seu ID.
@@ -355,7 +355,7 @@ def atualizar_aluno(aluno_id):
 def deletar_aluno(aluno_id):
     """
     Exclui um aluno da base de dados baseado em seu ID.
-
+    ---
     tags:
     - Alunos
     description: Exclui um aluno com base em seu ID.

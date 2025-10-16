@@ -6,7 +6,7 @@ main_bp = Blueprint('main', __name__)
 def pagina_inicial():
     """
     Status da API
-
+    ---
     tags:
     - Status
     description: Retorna uma mensagem de status para indicar que a API está funcionando.

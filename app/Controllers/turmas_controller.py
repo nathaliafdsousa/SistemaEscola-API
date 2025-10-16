@@ -13,7 +13,7 @@ def criar_turma():
 
     """
     Cria uma nova turma
-
+    ---
     tags:
     - Turmas
     description: Permite criar uma nova turma
@@ -89,7 +89,7 @@ def listar_turmas():
 
     """
     Listar todas as turmas existentes
-
+    ---
     tags:
     - Turmas
     description: Retorna uma lista com todas as turmas cadastradas na base de dados
@@ -143,7 +143,7 @@ def obter_turma(turma_id):
     
     """
     Fornece as informações de uma turma específica com base em seu ID.
-
+    ---
     tags:
     - Turmas
     description: Retorna os detalhes de uma turma a partir do seu ID
@@ -200,7 +200,7 @@ def atualizar_turma(turma_id):
     
     """
     Atualizar informações de uma turma já existente
-
+    ---
     tags:
     - Turmas
     description: Permite atualizar dados de uma turma
@@ -272,7 +272,7 @@ def deletar_turma(turma_id):
 
     """
     Excluir uma turma existente a partir de seu ID
-
+    ---
     tags:
     - Turmas
     description: Permite excluir uma turma a partir do seu ID

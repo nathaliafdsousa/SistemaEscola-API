@@ -33,7 +33,7 @@ def create_app():
     # Isso resolve o problema de "No operations defined in spec!"
     db.init_app(app)
     migrate.init_app(app, db)
-    swagger.init_app(app) # O Flagger/Swagger é inicializado primeiro
+     # O Flagger/Swagger é inicializado primeiro
 
     # Registro dos Blueprints (Agora o Swagger pode escanear as rotas corretamente)
     app.register_blueprint(main_bp)
@@ -41,6 +41,7 @@ def create_app():
     app.register_blueprint(professores_bp)
     app.register_blueprint(turmas_bp)
     
+    swagger.init_app(app)
     return app
 
 __all__ = ["create_app", "db"]

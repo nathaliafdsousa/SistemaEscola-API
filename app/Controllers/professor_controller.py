@@ -13,7 +13,7 @@ professores_bp = Blueprint("professores", __name__)
 def criar_professor():
     """
     Cria um novo professor
-
+    ---
     tags:
     - Professores
     description: Permite a criação de um novo professor
@@ -114,7 +114,7 @@ def criar_professor():
 def listar_professores():
     """
     Lista todos os professores existentes na base de dados.
-
+    ---
     tags:
     - Professores
     description: Retorna uma lista de todos os professores cadastrados
@@ -177,7 +177,7 @@ def obter_professor(professor_id):
     
     """
     Retornar as informações de um professor a partir de seu ID.
-
+    ---
     tags:
     - Professores
     description: Retorna os detalhes de um professor específico através do seu ID
@@ -247,7 +247,7 @@ def atualizar_professor(professor_id):
 
     """
     Atualiza as informações de um professor a partir do seu ID.
-
+    ---
     tags:
     - Professores
     description: Permite atualizar os detalhes de um professor a partir de seu ID.
@@ -348,7 +348,7 @@ def deletar_professor(professor_id):
     
     """
     Exclui um professor a partir de seu ID.
-
+    ---
     tags:
     - Professores
     description: Possibilita a exclusão de um professor específico através do seu ID
