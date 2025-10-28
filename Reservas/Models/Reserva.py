@@ -1,9 +1,16 @@
-from sqlalchemy import ForeignKey, Integer, String
-import requests
-from sqlalchemy.orm import Mapped, mapped_column, relationship #permite definir relacionamentos entre tabelas
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import String, Integer
+from sqlalchemy.orm import Mapped, mapped_column
 
-id_reserva = db.Column(Integer, primary_key=True)
-turma_id = mapped_column(Integer, ForeignKey("turmas.id"), nullable=False)
-professor_id = mapped_column(Integer, ForeignKey("professores.id"), nullable = False)
-professor_nome = mapped_column(String(100), nullable=False)
-materia = mapped_column(String(100), nullable=False)
+db = SQLAlchemy()
+
+class Reserva(db.Model):
+    __tablename__ = "reservas"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    turma_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    professor_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    professor_nome: Mapped[str] = mapped_column(String(100), nullable=False)
+    materia: Mapped[str] = mapped_column(String(100), nullable=False)
+    data_reserva: Mapped[str] = mapped_column(String(10), nullable=False)  
+
