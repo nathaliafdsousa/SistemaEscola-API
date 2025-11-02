@@ -1,15 +1,23 @@
-from . import create_app
-from flask import Flask, jsonify
-from .config import db
+from flask import Flask
+from flasgger import Swagger
+from config import db, migrate, swagger
+from Controller.reserva_controller import reserva_bp
 
-app = create_app()
+def create_app():
+    app = Flask(__name__)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///reservas.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-with app.app_context():
-    db.create_all()
+    db.init_app(app)
+    migrate.init_app(app, db)
+    swagger.init_app(app)
 
-@app.route("/health")
-def home():
-    return jsonify({"message":"API Sistema Escolar Gerenciamento de Reservas!"})
+    app.register_blueprint(reserva_bp)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    with app.app_context():
+        db.create_all()
+
+    return app
+if __name__ == '__main__':
+    app=create_app()
+    app.run(debug=True,port=5001)

@@ -1,8 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Integer
 from sqlalchemy.orm import Mapped, mapped_column
+from config import db
 
-db = SQLAlchemy()
 
 class Reserva(db.Model):
     __tablename__ = "reservas"
@@ -14,3 +14,13 @@ class Reserva(db.Model):
     materia: Mapped[str] = mapped_column(String(100), nullable=False)
     data_reserva: Mapped[str] = mapped_column(String(10), nullable=False)  
 
+
+    def to_dict(self):
+        return {
+        "id": self.id,
+        "turma_id": self.turma_id,
+        "professor_id": self.professor_id,
+        "professor_nome": self.professor_nome,
+        "materia": self.materia,
+        "data_reserva": self.data_reserva
+    }
