@@ -10,3 +10,11 @@ class Nota(db.Model):
     nota: Mapped[float] = mapped_column(db.Float, nullable=False)
     aluno_id: Mapped[int] = mapped_column(Integer, nullable=False)
     atividade_id: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nota": self.nota,
+            "aluno_id": self.aluno_id,
+            "atividade_id": self.atividade_id
+        }

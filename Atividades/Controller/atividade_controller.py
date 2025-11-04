@@ -6,7 +6,7 @@ atividade_bp = Blueprint("atividade_bp", __name__)
 
 GERENCIAMENTO_URL = "http://localhost:5000"  # serviço de gerenciamento
 
-atividade_bp.route("/atividades", methods=["POST"])
+@atividade_bp.route("/atividades", methods=["POST"])
 def criar_atividade():
     data = request.json
     r_turma = requests.get(f"{GERENCIAMENTO_URL}/turmas/{data['turma_id']}")
