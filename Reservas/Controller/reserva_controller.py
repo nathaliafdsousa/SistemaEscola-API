@@ -51,7 +51,7 @@ def criar_reserva():
     db.session.add(reserva)
     db.session.commit()
 
-    return jsonify(reserva.to_dict()), 201
+    return jsonify({"mensagem": "Reserva criada com sucesso"}), 201
 
 
 @reserva_bp.route('/reservas', methods=['GET'])

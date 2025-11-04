@@ -14,3 +14,14 @@ class Atividade(db.Model):
     turma_id: Mapped[int] = mapped_column(Integer, nullable=False)
     professor_id: Mapped[int] = mapped_column(Integer, nullable=False)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "nome_atividade": self.nome_atividade,
+            "descricao": self.descricao,
+            "peso_porcento": self.peso_porcento,
+            "data_entrega": self.data_entrega.isoformat(),
+            "turma_id": self.turma_id,
+            "professor_id": self.professor_id
+        }
+
