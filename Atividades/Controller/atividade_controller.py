@@ -8,6 +8,47 @@ GERENCIAMENTO_URL = "http://localhost:5000"  # serviço de gerenciamento
 
 @atividade_bp.route("/atividades", methods=["POST"])
 def criar_atividade():
+    """
+    Cria uma nova atividade após validar a existência de turma e professor associados
+
+    ---
+    tags:
+    - Atividades
+
+    parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    description: ID da atividade
+                nome_atividade:
+                    type: string
+                    description: Nome da atividade
+                descricao:
+                    type: string
+                    description: Descrição da atividade
+                peso_porcento:
+                    type: integer
+                    description: Peso em porcentagem da atividade
+                data_entrega:
+                    type: date
+                    description: Data de entrega da atividade
+                turma_id:
+                    type: integer
+                    description: ID da turma associada
+                professor_id:
+                    type: integer
+                    description: ID do professor associado
+    responses:
+        201:
+            description: Atividade criada com sucesso
+        400:
+            description: Dados inválidos
+    """
     data = request.json
     r_turma = requests.get(f"{GERENCIAMENTO_URL}/turmas/{data['turma_id']}")
     if r_turma.status_code != 200:
@@ -25,6 +66,18 @@ def criar_atividade():
 
 @atividade_bp.route("/atividades", methods=["GET"])
 def listar_atividades():
+    """
+    Listar todas as atividades
+    ---
+
+    tags:
+        - Atividades
+    responses:
+        200:
+            description: Lista de atividades
+        404:
+            description: Nenhuma atividade encontrada
+    """
     atividades = Atividade.query.all()
     if not atividades:
         return jsonify({"mensagem": "Nenhuma atividade encontrada"}), 404
@@ -32,6 +85,23 @@ def listar_atividades():
 
 @atividade_bp.route("/atividades/<int:id>", methods=["GET"])
 def obter_atividade(id):
+    """
+    Obter uma atividade específica através do ID
+    ---
+
+    tags:
+        - Atividades
+    parameters:
+        - name: id
+          in: path
+          type: integer
+          required: true
+    responses:
+        200:
+            description: Atividade encontrada
+        404:
+            description: Atividade não encontrada
+    """
     atividade = Atividade.query.get(id)
     if not atividade:
         return jsonify({"erro": "Atividade não encontrada"}), 404
@@ -39,6 +109,49 @@ def obter_atividade(id):
 
 @atividade_bp.route("/atividades/<int:id>", methods=["PUT"])
 def atualizar_atividade(id):
+    """
+    Atualizar uma atividade existente através do seu ID
+    ---
+
+    tags:
+        - Atividades
+    
+    parameters:
+        - name: id
+          in: path
+          type: integer
+          required: true
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+                nome_atividade:
+                    type: string
+                    descricao: Nome da atividade
+                descricao:
+                    type: string
+                    descricao: Descrição da atividade
+                peso_porcento:
+                    type: integer
+                    descricao: Peso em porcentagem da atividade
+                data_entrega:
+                    type: date
+                    descricao: Data de entrega da atividade
+                turma_id:
+                    type: integer
+                    descricao: ID da turma associada
+                professor_id:
+                    type: integer
+                    descricao: ID do professor associado
+    responses:
+        200:
+            description: Atividade atualizada com sucesso
+        400:
+            description: Dados inválidos
+        404:
+            description: Atividade não encontrada
+    """
     data = request.json
     atividade = Atividade.query.get(id)
     if not atividade:
@@ -66,6 +179,24 @@ def atualizar_atividade(id):
 
 @atividade_bp.route("/atividades/<int:id>", methods=["DELETE"])
 def deletar_atividade(id):
+    """
+    Deletar uma atividade através do seu ID
+    ---
+
+    tags:
+        - Atividades
+    
+    parameters:
+        - name: id
+          in: path
+          type: integer
+          required: true
+    responses:
+        200:
+            description: Atividade excluída com sucesso
+        404:
+            description: Atividade não encontrada
+    """
     atividade = Atividade.query.get(id)
     if not atividade:
         return jsonify({"erro":"Atividade não encontrada"}), 404
