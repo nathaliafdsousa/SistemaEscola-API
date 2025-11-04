@@ -22,9 +22,6 @@ def criar_atividade():
           schema:
             type: object
             properties:
-                id:
-                    type: integer
-                    description: ID da atividade
                 nome_atividade:
                     type: string
                     description: Nome da atividade

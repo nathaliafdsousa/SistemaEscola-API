@@ -8,6 +8,32 @@ GERENCIAMENTO_URL = "http://localhost:5000"
 
 @notatividade_bp.route("/notas", methods=["POST"])
 def criar_nota():
+    """
+    Criar uma nova nota
+    ---
+
+    tags:
+      - Notas
+    
+        parameters:
+            - in: body
+            name: body
+            required: true
+            schema:
+                type: object
+                properties:
+                    nota:
+                        type: float
+                    aluno_id:
+                        type: integer
+                    atividade_id:
+                        type: integer
+        responses:
+            201:
+                description: Nota criada com sucesso
+            400:
+                description: Dados inválidos
+    """
     data = request.json
     r_atividade = requests.get(f"{GERENCIAMENTO_URL}/atividades/{data['atividade_id']}")
     if r_atividade.status_code != 200:
@@ -21,6 +47,19 @@ def criar_nota():
 
 @notatividade_bp.route("/notas", methods=["GET"])
 def listar_notas():
+    """
+    Listar todas as notas
+    ---
+
+    tags:
+        - Notas
+    
+    responses:
+        200:
+            description: Lista de notas
+        404:
+            description: Nenhuma nota encontrada
+    """
     notas = Nota.query.all()
 
     if not notas:
@@ -29,6 +68,25 @@ def listar_notas():
 
 @notatividade_bp.route("/notas/<int:id>", methods=["GET"])
 def obter_nota(id):
+    """
+    Obter uma nota específica através do seu ID
+    ---
+
+    tags:
+        - Notas
+    
+    parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+    
+    responses:
+        200:
+            description: Nota encontrada
+        404:
+            description: Nota não encontrada
+    """
     nota = Nota.query.get(id)
     if not nota:
         return jsonify({"erro":"Nota não encontrada"}), 404
@@ -36,6 +94,39 @@ def obter_nota(id):
 
 @notatividade_bp.route("/notas/<int:id>", methods=["PUT"])
 def atualizar_nota(id):
+    """
+    Atualizar uma nota existente através do ID
+    ---
+
+    tags:
+        - Notas
+    
+    parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+        
+        - in: body
+          name: body
+          required: true
+          schema:
+              type: object
+              properties:
+                nota:
+                    type: float
+                aluno_id:
+                    type: integer
+                atividade_id
+                    type: integer
+    responses:
+        200:
+            description: Nota atualizada com sucesso
+        400:
+            description: Dados inválidos
+        404:
+            description: Nota não encontrada
+    """
     data = request.json
     nota = Nota.query.get(id)
 
@@ -61,6 +152,24 @@ def atualizar_nota(id):
 
 @notatividade_bp.route("/notas/<int:id>", methods=["DELETE"])
 def deletar_nota(id):
+    """
+    Deletar uma nota através do ID
+    ---
+
+    tags:
+        - Notas
+    
+    parameters:
+        - in: path
+          name: id
+          type: integer
+          required: true
+    responses:
+        200:
+            description: Nota excluída com sucesso
+        404:
+            description: Nota não encontrada para exclusão
+    """
     nota = Nota.query.get(id)
     if not nota:
         return jsonify({"erro":"Nota não encontrada"}), 404
