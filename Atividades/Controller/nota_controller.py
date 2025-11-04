@@ -42,8 +42,30 @@ def atualizar_nota(id):
     if not nota:
         return jsonify({"erro":"Nota não encontrada"}), 404
     
+    if "aluno_id" in data:
+        r_aluno = requests.get(f"{GERENCIAMENTO_URL}/alunos/{data['aluno_id']}")
+        if r_aluno.status_code != 200:
+            return jsonify({"erro":"Aluno não encontrado"}), 400
+        nota.aluno_id = data["aluno_id"]
+    
     if "atividade_id" in data:
         r_atividade = requests.get(f"{GERENCIAMENTO_URL}/atividades/{data['atividade_id']}")
         if r_atividade.status_code != 200:
             return jsonify({"erro":"Atividade não encontrada"}), 400
         nota.atividade_id = data["atividade_id"]
+
+        nota.nota = data.get("nota", nota.nota)
+        db.session.commit()
+
+        return jsonify({"message":"Nota atualizada com sucesso"}), 200
+
+@notatividade_bp.route("/notas/<int:id>", methods=["DELETE"])
+def deletar_nota(id):
+    nota = Nota.query.get(id)
+    if not nota:
+        return jsonify({"erro":"Nota não encontrada"}), 404
+    
+    db.session.delete(nota)
+    db.session.commit()
+
+    return jsonify({"message":"Nota deletada com sucesso"}), 200
