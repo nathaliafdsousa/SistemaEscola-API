@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  gerenciamento:
+    build: ./Gerenciamento
+    container_name: gerenciamento
+    ports:
+      - "5000:5000"
+    volumes:
+      - gerenciamento_data:/app
+    restart: always
+
+  reservas:
+    build: ./Reservas
+    container_name: reservas
+    ports:
+      - "5001:5001"
+    environment:
+      GERENCIAMENTO_URL: "http://gerenciamento:5000"
+    depends_on:
+      - gerenciamento
+    volumes:
+      - reservas_data:/app
+    restart: always
+
+  atividades:
+    build: ./Atividades
+    container_name: atividades
+    ports:
+      - "5002:5002"
+    environment:
+      GERENCIAMENTO_URL: "http://gerenciamento:5000"
+    depends_on:
+      - gerenciamento
+    volumes:
+      - atividades_data:/app
+    restart: always
+
+volumes:
+  gerenciamento_data:
+  reservas_data:
+  atividades_data:
