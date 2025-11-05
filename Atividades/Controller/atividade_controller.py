@@ -9,43 +9,43 @@ GERENCIAMENTO_URL = "http://localhost:5000"  # serviço de gerenciamento
 @atividade_bp.route("/atividades", methods=["POST"])
 def criar_atividade():
     """
-    Cria uma nova atividade após validar a existência de turma e professor associados
+Cria uma nova atividade após validar a existência de turma e professor associados
+---
+tags:
+  - Atividades
+parameters:
+  - in: body
+    name: body
+    required: true
+    schema:
+      type: object
+      properties:
+        nome_atividade:
+          type: string
+          description: Nome da atividade
+        descricao:
+          type: string
+          description: Descrição da atividade
+        peso_porcento:
+          type: integer
+          description: Peso em porcentagem da atividade
+        data_entrega:
+          type: string
+          format: date
+          description: Data de entrega da atividade
+        turma_id:
+          type: integer
+          description: ID da turma associada
+        professor_id:
+          type: integer
+          description: ID do professor associado
+responses:
+  201:
+    description: Atividade criada com sucesso
+  400:
+    description: Dados inválidos
+"""
 
-    ---
-    tags:
-    - Atividades
-
-    parameters:
-        - in: body
-          name: body
-          required: true
-          schema:
-            type: object
-            properties:
-                nome_atividade:
-                    type: string
-                    description: Nome da atividade
-                descricao:
-                    type: string
-                    description: Descrição da atividade
-                peso_porcento:
-                    type: integer
-                    description: Peso em porcentagem da atividade
-                data_entrega:
-                    type: date
-                    description: Data de entrega da atividade
-                turma_id:
-                    type: integer
-                    description: ID da turma associada
-                professor_id:
-                    type: integer
-                    description: ID do professor associado
-    responses:
-        201:
-            description: Atividade criada com sucesso
-        400:
-            description: Dados inválidos
-    """
     data = request.json
     r_turma = requests.get(f"{GERENCIAMENTO_URL}/turmas/{data['turma_id']}")
     if r_turma.status_code != 200:
