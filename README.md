@@ -1,88 +1,55 @@
-# API - Sistema de Gestão Escolar
+# 🎓 SistemaEscola-API
 
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
-
-Uma API RESTful desenvolvida em Python com o framework Flask para gerenciar as operações básicas de um sistema escolar. O projeto permite o cadastro e a manipulação de dados de alunos, cursos e as matrículas que os relacionam.
+API Restful para um sistema escolar, construída utilizando uma arquitetura de microsserviços com Python e Docker.
 
 Colaboradores do projeto:
-   * **Ana Olivia Geraldo - RA:2403901**
-   * **Gabrielle Ribeiro de Pádua - RA:2403656**
-   * **Nathalia Ferreira - RA:2402413**
-   * **Pedro Felipe - RA:2400450**
-# Funcionalidades
 
-A API oferece os seguintes endpoints para gerenciamento:
+Ana Olivia Geraldo - RA:2403901
+Gabrielle Ribeiro de Pádua - RA:2403656
+Nathalia Ferreira - RA:2402413
+Pedro Felipe - RA:2400450
+---
 
-* **Alunos**:
-    * Listar todos os alunos.
-    * Buscar um aluno específico por ID.
-    * Adicionar um novo aluno.
-    * Atualizar os dados de um aluno.
-    * Remover um aluno.
-* **Cursos**:
-    * Listar todos os cursos.
-    * Adicionar um novo curso.
-    * Remover um curso.
-* **Matrículas**:
-    * Listar todas as matrículas.
-    * Realizar a matrícula de um aluno em um curso.
+## 🏛️ Arquitetura e Ecossistema de Microsserviços
 
-# Tecnologias Utilizadas
+O projeto é dividido em três serviços independentes, cada um rodando em seu próprio container Docker, orquestrados pelo `docker-compose.yml`.
 
-* **[Python](https://www.python.org/)**: Linguagem de programação principal.
-* **[Flask](https://flask.palletsprojects.com/)**: Micro-framework web para a construção da API.
-* **[Flask-RESTful](https://flask-restful.readthedocs.io/)**: Extensão para a criação rápida de APIs REST em Flask.
-* **[Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com/)**: Extensão para integração com bancos de dados SQL através do ORM SQLAlchemy.
-* **[SQLite](https://www.sqlite.org/)**: Banco de dados relacional utilizado no ambiente de desenvolvimento.
+A arquitetura é baseada em um serviço central (`gerenciamento`) do qual os outros serviços dependem para obter informações.
 
-# Como Executar o Projeto
 
-Siga os passos abaixo para configurar e rodar o projeto em seu ambiente local.
 
-# Pré-requisitos
+### Serviços
+* **`gerenciamento` (Porta: 5000)**
+    * **Descrição:** Serviço central da aplicação. Responsável pelo gerenciamento de entidades principais (como alunos, professores, etc.).
+    * **Build:** Construído a partir do diretório `./Gerenciamento`.
 
-* [Python 3.8+](https://www.python.org/downloads/)
-* [Git](https://git-scm.com/)
+* **`reservas` (Porta: 5001)**
+    * **Descrição:** Serviço responsável pela lógica de reservas (ex: salas, equipamentos).
+    * **Build:** Construído a partir do diretório `./Reservas`.
+    * **Integração:** Este serviço **depende** do serviço `gerenciamento` para funcionar.
 
-# Instalação
+* **`atividades` (Porta: 5002)**
+    * **Descrição:** Serviço responsável pela lógica de atividades e notas.
+    * **Build:** Construído a partir do diretório `./Atividades`.
+    * **Integração:** Este serviço também **depende** do serviço `gerenciamento`.
 
-1.  **Clone o repositório:**
-    ```bash
-    git clone [https://github.com/nathaliafdsousa/SistemaEscola-API.git](https://github.com/nathaliafdsousa/SistemaEscola-API.git)
-    ```
+### 🔄 Fluxo de Integração entre Serviços
 
-2.  **Acesse o diretório do projeto:**
-    ```bash
-    cd SistemaEscola-API
-    ```
+A comunicação entre os serviços é gerenciada pela rede interna do Docker:
 
-3.  **(Recomendado) Crie e ative um ambiente virtual:**
-    ```bash
-    # Criar o ambiente
-    python -m venv venv
-
-    # Ativar no Windows
-    .\venv\Scripts\activate
-
-    # Ativar no Linux/macOS
-    source venv/bin/activate
-    ```
-
-4.  **Instale as dependências do projeto:**
-    > **Obs.**: É uma boa prática adicionar um arquivo `requirements.txt` ao projeto. Se ele não existir, você pode instalar as bibliotecas manualmente:
-    ```bash
-    pip install Flask Flask-RESTful Flask-SQLAlchemy
-    ```
-
-# Rodando a Aplicação
-
-Com o ambiente configurado e as dependências instaladas, utilize o seguinte comando no terminal, a partir da raiz do projeto, para iniciar o servidor:
-
-```bash
-python -m app.run
-```
-
-A API estará disponível no endereço: `http://127.0.0.1:5000/`
+1.  **Ordem de Inicialização:** O `docker-compose.yml` usa a diretiva `depends_on` para garantir que o serviço `gerenciamento` seja iniciado *antes* dos serviços `reservas` e `atividades`.
+2.  **Descoberta de Serviço (Service Discovery):**
+    * Os serviços `reservas` e `atividades` recebem uma variável de ambiente chamada `GERENCIAMENTO_URL` (configurada no `docker-compose.yml`).
+    * O valor dessa variável é `http://gerenciamento:5000`.
+    * Dentro do ambiente Docker, `gerenciamento` é resolvido como o endereço IP interno do container `gerenciamento`, permitindo que os serviços `reservas` e `atividades` façam requisições HTTP para o serviço central.
 
 ---
+
+## 🐳 Execução com Docker
+
+O projeto é 100% containerizado. A única dependência para execução é o **Docker** e o **Docker Compose**.
+
+### 1. Clonar o Repositório
+```bash
+git clone [https://github.com/nathaliafdsousa/SistemaEscola-API.git](https://github.com/nathaliafdsousa/SistemaEscola-API.git)
+cd SistemaEscola-API
