@@ -27,5 +27,17 @@ services:
     build: ./Atividades
     container_name: atividades
     ports:
-      - "5002:
+      - "5002:5002"
+    environment:
+      GERENCIAMENTO_URL: "http://gerenciamento:5000"
+    depends_on:
+      - gerenciamento
+    volumes:
+      - atividades_data:/app
+    restart: always
+
+volumes:
+  gerenciamento_data:
+  reservas_data:
+  atividades_data:
 
