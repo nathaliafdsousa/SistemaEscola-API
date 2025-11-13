@@ -2,13 +2,14 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-
-COPY run.py .
-COPY requirements.txt .
+# Copia TUDO necessário para o container (pastas, config.py, etc)
+COPY . .
 
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 5001
+# Porta correta (5002, mesma do docker-compose)
+EXPOSE 5002
 
 CMD ["python", "run.py"]
+
