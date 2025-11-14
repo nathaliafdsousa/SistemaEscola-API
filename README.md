@@ -1,55 +1,116 @@
-# 🎓 SistemaEscola-API
+🎓 SistemaEscola-API
 
 API Restful para um sistema escolar, construída utilizando uma arquitetura de microsserviços com Python e Docker.
 
-Colaboradores do projeto:
+👥 Colaboradores do projeto
+	•	Ana Olivia Geraldo - RA: 2403901
+	•	Gabrielle Ribeiro de Pádua - RA: 2403656
+	•	Nathalia Ferreira - RA: 2402413
+	•	Pedro Felipe - RA: 2400450
 
-Ana Olivia Geraldo - RA:2403901
-Gabrielle Ribeiro de Pádua - RA:2403656
-Nathalia Ferreira - RA:2402413
-Pedro Felipe - RA:2400450
----
+🏛️ Arquitetura e Ecossistema de Microsserviços
 
-## 🏛️ Arquitetura e Ecossistema de Microsserviços
+O projeto é dividido em três serviços independentes, cada um rodando em seu próprio container Docker, orquestrados pelo docker-compose.yml.
 
-O projeto é dividido em três serviços independentes, cada um rodando em seu próprio container Docker, orquestrados pelo `docker-compose.yml`.
+A arquitetura é baseada em um serviço central (gerenciamento) do qual os outros serviços dependem para obter informações.
 
-A arquitetura é baseada em um serviço central (`gerenciamento`) do qual os outros serviços dependem para obter informações.
+📌 Serviços
 
+gerenciamento — Porta 5000
+	•	Descrição: Serviço central da aplicação. Responsável pela gestão dos dados principais.
+	•	Build: Diretório ./Gerenciamento
 
+reservas — Porta 5001
+	•	Descrição: Serviço responsável pelo controle de reservas.
+	•	Build: Diretório ./Reservas
+	•	Depende de: gerenciamento
 
-### Serviços
-* **`gerenciamento` (Porta: 5000)**
-    * **Descrição:** Serviço central da aplicação. Responsável pelo gerenciamento de entidades principais (como alunos, professores, etc.).
-    * **Build:** Construído a partir do diretório `./Gerenciamento`.
+atividades — Porta 5002
+	•	Descrição: Serviço responsável pela lógica de atividades e notas.
+	•	Build: Diretório ./Atividades
+	•	Depende de: gerenciamento
 
-* **`reservas` (Porta: 5001)**
-    * **Descrição:** Serviço responsável pela lógica de reservas (ex: salas, equipamentos).
-    * **Build:** Construído a partir do diretório `./Reservas`.
-    * **Integração:** Este serviço **depende** do serviço `gerenciamento` para funcionar.
+🔄 Fluxo de Integração entre os Serviços
+	1.	Ordem de Inicialização
+O docker-compose.yml utiliza depends_on garantindo que o serviço gerenciamento suba primeiro.
+	2.	Service Discovery (Descoberta de Serviços)
+	•	Os serviços reservas e atividades recebem a variável
+GERENCIAMENTO_URL=http://gerenciamento:5000
+	•	Dentro do Docker, o nome do serviço vira o endereço interno do container.
 
-* **`atividades` (Porta: 5002)**
-    * **Descrição:** Serviço responsável pela lógica de atividades e notas.
-    * **Build:** Construído a partir do diretório `./Atividades`.
-    * **Integração:** Este serviço também **depende** do serviço `gerenciamento`.
+🐳 Execução com Docker
 
-### 🔄 Fluxo de Integração entre Serviços
+O projeto é totalmente containerizado. Você só precisa do:
+	•	Docker
+	•	Docker Compose (já vem no Docker Desktop)
 
-A comunicação entre os serviços é gerenciada pela rede interna do Docker:
+1️⃣ Clonar o Repositório
 
-1.  **Ordem de Inicialização:** O `docker-compose.yml` usa a diretiva `depends_on` para garantir que o serviço `gerenciamento` seja iniciado *antes* dos serviços `reservas` e `atividades`.
-2.  **Descoberta de Serviço (Service Discovery):**
-    * Os serviços `reservas` e `atividades` recebem uma variável de ambiente chamada `GERENCIAMENTO_URL` (configurada no `docker-compose.yml`).
-    * O valor dessa variável é `http://gerenciamento:5000`.
-    * Dentro do ambiente Docker, `gerenciamento` é resolvido como o endereço IP interno do container `gerenciamento`, permitindo que os serviços `reservas` e `atividades` façam requisições HTTP para o serviço central.
-
----
-
-## 🐳 Execução com Docker
-
-O projeto é 100% containerizado. A única dependência para execução é o **Docker** e o **Docker Compose**.
-
-### 1. Clonar o Repositório
-```bash
-git clone [https://github.com/nathaliafdsousa/SistemaEscola-API.git](https://github.com/nathaliafdsousa/SistemaEscola-API.git)
+git clone https://github.com/nathaliafdsousa/SistemaEscola-API.git
 cd SistemaEscola-API
+
+2️⃣ Rodar TUDO com Docker Compose
+
+Dentro da pasta raiz do projeto:
+
+▶️ Subir os containers (com build)
+
+docker compose up --build
+
+▶️ Subir sem rebuild
+
+docker compose up
+
+🛑 Parar tudo
+
+docker compose down
+
+🧹 Parar e remover tudo (incluindo volumes)
+
+docker compose down -v
+
+🖥️ Executar Manualmente pelo Terminal (sem Docker)
+
+Se quiser rodar cada serviço individualmente, siga abaixo.
+
+📌 1. Rodar o serviço Gerenciamento
+
+Comando:
+
+cd Gerenciamento
+python -m app.run
+
+	Esse serviço roda normalmente na porta 5000.
+
+📌 2. Rodar o serviço Reservas
+
+Comando:
+
+cd Reservas
+python run.py
+
+	Certifique-se de que o serviço gerenciamento esteja rodando primeiro.
+Porta padrão: 5001
+
+📌 3. Rodar o serviço Atividades
+
+Comando:
+
+cd Atividades
+python run.py
+
+	Porta padrão: 5002
+
+🌐 Endpoints (Padrão)
+
+Serviço	Porta	Exemplo de URL
+Gerenciamento	5000	http://localhost:5000
+Reservas	5001	http://localhost:5001
+Atividades	5002	http://localhost:5002
+
+📝 Dicas Importantes
+	•	Todos os microsserviços precisam do gerenciamento ativo para funcionar.
+	•	Se rodar manualmente sem Docker, configure a variável de ambiente:
+
+GERENCIAMENTO_URL=http://localhost:5000
+
