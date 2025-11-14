@@ -30,6 +30,22 @@ def criar_nota():
     responses:
       201:
         description: Nota criada com sucesso
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nota:
+              type: number
+              format: float
+              example: 8.5
+            aluno_id:
+              type: integer
+              example: 3039
+            atividade_id:
+              type: integer
+              example: 4040
       400:
         description: Dados inválidos
     """
@@ -55,6 +71,24 @@ def listar_notas():
     responses:
       200:
         description: Lista de notas
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              nota:
+                type: number
+                format: float
+                example: 8.5
+              aluno_id:
+                type: integer
+                example: 3039
+              atividade_id:
+                type: integer
+                example: 4040
       404:
         description: Nenhuma nota encontrada
     """
@@ -80,6 +114,22 @@ def obter_nota(id):
     responses:
       200:
         description: Nota encontrada
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nota:
+              type: number
+              format: float
+              example: 8.5
+            aluno_id:
+              type: integer
+              example: 3039
+            atividade_id:
+              type: integer
+              example: 4040
       404:
         description: Nota não encontrada
     """
@@ -117,6 +167,22 @@ def atualizar_nota(id):
     responses:
       200:
         description: Nota atualizada com sucesso
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nota:
+              type: number
+              format: float
+              example: 9.0
+            aluno_id:
+              type: integer
+              example: 3039
+            atividade_id:
+              type: integer
+              example: 4040
       400:
         description: Dados inválidos
       404:
@@ -161,6 +227,12 @@ def deletar_nota(id):
     responses:
       200:
         description: Nota excluída com sucesso
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Nota excluída com sucesso
       404:
         description: Nota não encontrada para exclusão
     """

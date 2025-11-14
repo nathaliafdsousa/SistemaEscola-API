@@ -72,6 +72,33 @@ def listar_atividades():
     responses:
         200:
             description: Lista de atividades
+            schema:
+                type: array
+                items:
+                    type: object
+                    properties:
+                        id:
+                            type: integer
+                            example: 1
+                        nome_atividade:
+                            type: string
+                            example: Atividade 1
+                        descricao:
+                            type: string
+                            example: Descrição da Atividade 1
+                        peso_porcento:
+                            type: integer
+                            example: 30
+                        data_entrega:
+                            type: string
+                            format: date
+                            example: 2023-12-31
+                        turma_id:
+                            type: integer
+                            example: 3039
+                        professor_id:
+                            type: integer
+                            example: 4040
         404:
             description: Nenhuma atividade encontrada
     """

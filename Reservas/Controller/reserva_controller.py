@@ -64,6 +64,24 @@ def listar_reservas():
     responses:
       200:
         description: Lista de reservas
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              turma_id:
+                type: integer
+              professor_id:
+                type: integer
+              professor_nome:
+                type: string
+              materia:
+                type: string
+              data_reserva:
+                type: string
+
     """
     reservas = Reserva.query.all()
     return jsonify([r.to_dict() for r in reservas]), 200
@@ -84,6 +102,28 @@ def buscar_reserva(id):
     responses:
       200:
         description: Reserva encontrada
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            turma_id:
+              type: integer
+              example: 3039
+            professor_id:
+              type: integer
+              example: 4040
+            professor_nome:
+              type: string
+              example: "João Silva"
+            materia:
+              type: string
+              example: "Matemática"
+            data_reserva:
+              type: string
+              format: date
+              example: "2023-12-31"
       404:
         description: Reserva não encontrada
     """
@@ -123,6 +163,28 @@ def atualizar_reserva(id):
     responses:
       200:
         description: Reserva atualizada
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            turma_id:
+              type: integer
+              example: 3039
+            professor_id:
+              type: integer
+              example: 4040
+            professor_nome:
+              type: string
+              example: "João Silva"
+            materia:
+              type: string
+              example: "Matemática"
+            data_reserva:
+              type: string
+              format: date
+              example: "2023-12-31"
       404:
         description: Reserva não encontrada
     """
@@ -167,6 +229,12 @@ def deletar_reserva(id):
     responses:
       200:
         description: Reserva deletada com sucesso
+        schema:
+          type: object
+          properties:
+            mensagem:
+              type: string
+              example: "Reserva deletada com sucesso"
       404:
         description: Reserva não encontrada
     """
