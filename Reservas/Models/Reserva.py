@@ -14,7 +14,7 @@ class Reserva(db.Model):
     materia: Mapped[str] = mapped_column(String(100), nullable=False)
     data_reserva: Mapped[str] = mapped_column(String(10), nullable=False)  
 
-def to_dict(self):
+    def to_dict(self):
         return {
             "id": self.id,
             "turma_id": self.turma_id,
