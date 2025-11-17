@@ -78,7 +78,7 @@ Se quiser rodar cada serviço individualmente, siga abaixo.
 Comando:
 
 cd Gerenciamento
-python -m app.run
+python -m gerenciamento.run
 
 	Esse serviço roda normalmente na porta 5000.
 
