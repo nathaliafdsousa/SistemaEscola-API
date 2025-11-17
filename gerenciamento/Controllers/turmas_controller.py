@@ -1,10 +1,10 @@
 from flask import request, jsonify
 from datetime import datetime
 from ..config import db
-from app.Models.Turma import Turma
+from gerenciamento.Models.Turma import Turma
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
-from app.Models.Professor import Professor # Importe o Professor para checar a FK
+from gerenciamento.Models.Professor import Professor # Importe o Professor para checar a FK
 
 turmas_bp = Blueprint("turmas", __name__)
 

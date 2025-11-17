@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from datetime import datetime
 from ..config import db
-from app.Models.Aluno import Aluno
+from gerenciamento.Models.Aluno import Aluno
 from flask import Blueprint
 from sqlalchemy.exc import IntegrityError
 

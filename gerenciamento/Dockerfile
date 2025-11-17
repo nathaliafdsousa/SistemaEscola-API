@@ -10,4 +10,4 @@ RUN pip install --upgrade pip && \
 
 EXPOSE 5000
 
-CMD ["python","-m", "app.run"]
+CMD ["python","-m", "gerenciamento.run"]

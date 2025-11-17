@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint
 from ..config import db
-from app.Models.Professor import Professor
+from gerenciamento.Models.Professor import Professor
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequest 
 

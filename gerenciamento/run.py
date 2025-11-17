@@ -1,4 +1,4 @@
-from . import create_app
+from gerenciamento import create_app
 from flask import Flask, jsonify
 from .config import db
 
